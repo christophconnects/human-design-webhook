@@ -1,35 +1,23 @@
-from flask import Flask, request
-import json
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return '✅ Webhook läuft auf Render!'
-
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     if request.method == 'GET':
         return "✅ Webhook erreichbar (GET)", 200
 
+    print("✅ Webhook wurde aufgerufen!")
+
     try:
-        # Ganze Anfrage als Text lesen
-        raw_data = request.get_data(as_text=True)
-        print("📦 Rohdaten (Text):")
-        print(raw_data)
+        # Formulardaten anzeigen (für application/x-www-form-urlencoded)
+        form_data = request.form.to_dict()
+        print("📦 Formulardaten:")
+        for key, value in form_data.items():
+            print(f"{key} = {value}")
 
-        # Dann versuchen, JSON zu interpretieren
-        data = request.get_json(force=True)
-        print("✅ Webhook wurde aufgerufen!")
-        print("📦 JSON-Daten:")
-        print(json.dumps(data, indent=2))
+        # Einzelne Werte testen
+        geburtsdatum = form_data.get("custom_fields[geburtsdatum]")
+        geburtszeit = form_data.get("custom_fields[geburtszeit]")
+        geburtsort = form_data.get("custom_fields[geburtsort]")
 
-        # Optional: Custom Fields anzeigen
-        geburtsdatum = data.get("custom_fields", {}).get("geburtsdatum")
-        geburtszeit = data.get("custom_fields", {}).get("geburtszeit")
-        geburtsort = data.get("custom_fields", {}).get("geburtsort")
-
-        print(f"📅 Geburtsdatum: {geburtsdatum}")
+        print(f"\n📅 Geburtsdatum: {geburtsdatum}")
         print(f"🕒 Geburtszeit: {geburtszeit}")
         print(f"📍 Geburtsort: {geburtsort}")
 
@@ -37,5 +25,3 @@ def webhook():
         print("❌ Fehler beim Verarbeiten:", str(e))
 
     return "OK", 200
-
-app.run(host="0.0.0.0", port=10000)
