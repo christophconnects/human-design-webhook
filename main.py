@@ -13,13 +13,18 @@ def webhook():
         return "✅ Webhook erreichbar (GET)", 200
 
     try:
-        data = request.get_json(force=True)
+        # Ganze Anfrage als Text lesen
+        raw_data = request.get_data(as_text=True)
+        print("📦 Rohdaten (Text):")
+        print(raw_data)
 
+        # Dann versuchen, JSON zu interpretieren
+        data = request.get_json(force=True)
         print("✅ Webhook wurde aufgerufen!")
-        print("📦 Rohdaten (JSON):")
+        print("📦 JSON-Daten:")
         print(json.dumps(data, indent=2))
 
-        # Custom Fields auslesen
+        # Optional: Custom Fields anzeigen
         geburtsdatum = data.get("custom_fields", {}).get("geburtsdatum")
         geburtszeit = data.get("custom_fields", {}).get("geburtszeit")
         geburtsort = data.get("custom_fields", {}).get("geburtsort")
