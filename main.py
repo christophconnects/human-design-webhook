@@ -1,5 +1,4 @@
 from flask import Flask, request
-import json
 
 app = Flask(__name__)
 
@@ -15,16 +14,16 @@ def webhook():
     print("✅ Webhook wurde aufgerufen!")
 
     try:
-        # Formulardaten anzeigen (Digistore sendet keine JSON, sondern form data)
+        # Formulardaten (klassisch übermitteltes Format von Digistore)
         form_data = request.form.to_dict()
-        print("📦 Formulardaten:")
+        print("📦 Formulardaten (Digistore):")
         for key, value in form_data.items():
             print(f"{key} = {value}")
 
-        # Custom Fields gezielt extrahieren
-        geburtsdatum = form_data.get("custom_fields[geburtsdatum]")
-        geburtszeit = form_data.get("custom_fields[geburtszeit]")
-        geburtsort = form_data.get("custom_fields[geburtsort]")
+        # Custom Fields einzeln extrahieren
+        geburtsdatum = form_data.get("custom_fields[geburtsdatum]", "nicht angegeben")
+        geburtszeit = form_data.get("custom_fields[geburtszeit]", "nicht angegeben")
+        geburtsort = form_data.get("custom_fields[geburtsort]", "nicht angegeben")
 
         print(f"\n📅 Geburtsdatum: {geburtsdatum}")
         print(f"🕒 Geburtszeit: {geburtszeit}")
