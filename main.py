@@ -8,26 +8,20 @@ def home():
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    if request.method == 'GET':
-        return "✅ Webhook erreichbar (GET)", 200
-
     print("✅ Webhook wurde aufgerufen!")
 
     try:
-        # Formulardaten (klassisch übermitteltes Format von Digistore)
+        # 1. Komplette rohe Anfrage anzeigen (egal welches Format)
+        raw_body = request.get_data(as_text=True)
+        print("\n📦 ROHDATEN:")
+        print(raw_body)
+
+        # 2. Falls Formulardaten vorhanden sind, extra anzeigen
         form_data = request.form.to_dict()
-        print("📦 Formulardaten (Digistore):")
-        for key, value in form_data.items():
-            print(f"{key} = {value}")
-
-        # Custom Fields einzeln extrahieren
-        geburtsdatum = form_data.get("custom_fields[geburtsdatum]", "nicht angegeben")
-        geburtszeit = form_data.get("custom_fields[geburtszeit]", "nicht angegeben")
-        geburtsort = form_data.get("custom_fields[geburtsort]", "nicht angegeben")
-
-        print(f"\n📅 Geburtsdatum: {geburtsdatum}")
-        print(f"🕒 Geburtszeit: {geburtszeit}")
-        print(f"📍 Geburtsort: {geburtsort}")
+        if form_data:
+            print("\n🧾 FORMULARDATEN:")
+            for key, value in form_data.items():
+                print(f"{key} = {value}")
 
     except Exception as e:
         print("❌ Fehler beim Verarbeiten:", str(e))
