@@ -1,1 +1,9 @@
+services:
+  - type: web
+    name: human-design-webhook
+    env: python
+    plan: free
+    buildCommand: ""
+    startCommand: "python main.py"
+    autoDeploy: true
 
